@@ -2,8 +2,8 @@
 #
 # n = int(input(""))
 # n_2 = n
-#
-#
+
+
 # def mlp(list_mlp):
 #     b = 1
 #     for a in list_mlp:
@@ -29,7 +29,7 @@
 #         print(mlp(list_num))
 #
 #     else:
-#         print("It is a prime number")
+#         print("Invalid value")
 #
 # else:
 #     print("Invalid value")
