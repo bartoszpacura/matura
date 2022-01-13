@@ -1,12 +1,19 @@
-n = int(input(""))
+from math import sqrt
 
-if n > 2:
+n = int(input(""))
+m = False
+
+if n < 2:
+    print("It is not prime number")
+    exit()
+
+elif n > 2:
     for numbers in range(2, n):
         if n % numbers == 0:
-            print("It is not prime number")
+            m = True
             break
-        else:
-            print("It is prime number")
-            break
-else:
-    print("Invalid Value!")
+
+if m is True:
+    print("It is not prime number")
+elif m is False:
+    print("It is prime number")
