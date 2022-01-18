@@ -3,6 +3,7 @@ import itertools
 import os.path
 
 tasks = {}
+completed_tasks = {}
 
 
 def how_many():
@@ -86,8 +87,11 @@ def save_tasks_to_file():
 
     elif answer == "2":
         file_name = input("Enter the name of the new file: ")
+        file_ext = input("Enter the file extension: ")
+        file_name += file_ext
         save_tasks(file_name)
-        print("\nThe tasks have been successfully saved the new file" + str(file_name))
+        print("\nThe tasks have been successfully saved the new file " + str(file_name))
+        print()
 
         return file_name
 
@@ -100,7 +104,7 @@ def save_tasks_to_file():
 def save_after_exit(name, optional_s):
     if name != "" and optional_s is True:
         save_tasks(name)
-    elif name == "":
+    elif name == "" and optional_s is True:
         if os.path.isfile("./" + "new_save.txt") is False:
             save_tasks("new_save.txt")
         else:
@@ -110,9 +114,12 @@ def save_after_exit(name, optional_s):
                     break
                 else:
                     continue
+    else:
+        pass
 
 
 def load_tasks_from_file():
+
     file_name = input("Enter the name of the file: ")
 
     key = 0
@@ -132,10 +139,96 @@ def load_tasks_from_file():
             count += 1
 
         file.close()
+
         print("\nThe content of the file has been loaded successfully\n")
+        return file_name
 
     except FileNotFoundError:
         print("\nThe file was not found\n")
+        return "fnf"
+
+
+def list_of_tasks():
+    print("Completed tasks: \n")
+    if not completed_tasks:
+        print("The list is empty\n")
+    else:
+        for k, v in sorted(completed_tasks.items()):
+            print(v + " [" + k + "]")
+        print()
+
+    keys_1 = tasks.keys()
+    keys_2 = completed_tasks.keys()
+    difference = []
+    difference = keys_1 - keys_2
+
+    print("Uncompleted tasks: \n")
+    if not completed_tasks:
+        print("The list is empty\n")
+    else:
+        for k in sorted(difference):
+            print(tasks[k] + " [" + k + "]")
+        print()
+
+
+def add_completed_task():
+    task_to_list = input("Enter the task number to add the task it to the list of completed tasks, or enter 'no': ")
+    ct_bool = False
+
+    if str(task_to_list) == "no":
+        print("\nNo tasks have been added to completed tasks\n")
+    elif int(task_to_list) >= 0:
+        for key in tasks.keys():
+            if key == task_to_list:
+                completed_tasks[key] = tasks[key]
+                ct_bool = True
+                print("\nThe task has been added to completed tasks\n")
+                break
+            else:
+                continue
+        if ct_bool is False:
+            print("\nInvalid Value\n")
+    else:
+        print("\nInvalid Value\n")
+
+
+def load_completed_tasks(name):
+
+    key = 0
+    value = 0
+
+    try:
+        file = open("completed tasks_" + name, "r")
+        f = file.readlines()
+        count = 0
+        for line in f:
+            if count % 2 == 0:
+                key = line.strip("\n")
+            elif count % 2 != 0:
+                value = line.strip("\n")
+
+            completed_tasks[key] = value
+            count += 1
+        file.close()
+    except FileNotFoundError:
+        pass
+
+
+def save_completed_tasks_after_exit(name):
+    if name == "":
+        file = open("completed tasks.txt", "w")
+        for task in completed_tasks:
+            a = completed_tasks[task]
+            file.write(task + "\n" + a + "\n")
+        file.close()
+    elif name != "" and name != "fnf":
+        file = open("completed tasks_" + name, "w")
+        for task in completed_tasks:
+            a = completed_tasks[task]
+            file.write(task + "\n" + a + "\n")
+        file.close()
+    elif name == "fnf":
+        pass
 
 
 def show_menu():
@@ -145,7 +238,8 @@ def show_menu():
     print("4. Save changes to file")
     print("5. Load changes from file")
     print("6. Autosave")
-    print("7. Exit")
+    print("7. Completed tasks")
+    print("8. Exit")
 
 
 show_menu()
@@ -176,7 +270,8 @@ while True:
             show_menu()
 
         elif user_choice == 5:
-            load_tasks_from_file()
+            name_of_the_file = load_tasks_from_file()
+            load_completed_tasks(name_of_the_file)
             show_menu()
 
         elif user_choice == 6:
@@ -184,11 +279,18 @@ while True:
             show_menu()
 
         elif user_choice == 7:
+            list_of_tasks()
+            add_completed_task()
+            list_of_tasks()
+            show_menu()
+
+        elif user_choice == 8:
             save_after_exit(name_of_the_file, auto_s)
+            save_completed_tasks_after_exit(name_of_the_file)
             print("Exit")
             break
 
-        elif user_choice <= 0 or user_choice >= 7:
+        elif user_choice <= 0 or user_choice >= 8:
             print("Invalid Value!")
             print()
             show_menu()
