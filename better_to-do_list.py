@@ -5,6 +5,13 @@ import os.path
 tasks = {}
 completed_tasks = {}
 
+job = {}
+learning = {}
+sport = {}
+recreation = {}
+
+categories = [job, learning, sport, recreation]
+
 
 def how_many():
     length = len(tasks) - 1
@@ -119,7 +126,6 @@ def save_after_exit(name, optional_s):
 
 
 def load_tasks_from_file():
-
     file_name = input("Enter the name of the file: ")
 
     key = 0
@@ -159,7 +165,6 @@ def list_of_tasks():
 
     keys_1 = tasks.keys()
     keys_2 = completed_tasks.keys()
-    difference = []
     difference = keys_1 - keys_2
 
     print("Uncompleted tasks: \n")
@@ -193,7 +198,6 @@ def add_completed_task():
 
 
 def load_completed_tasks(name):
-
     key = 0
     value = 0
 
@@ -231,6 +235,123 @@ def save_completed_tasks_after_exit(name):
         pass
 
 
+def add_to_category():
+    print("Categories of tasks:\n1. job\n2. learning\n3. sport\n4. recreation")
+    answer = input("\nIf you want to add a task to the category enter 'yes' or if not enter 'no': ")
+    if answer == "yes":
+        number = input("\nEnter the number of the task: ")
+        if number in tasks:
+            category = int(input("\nEnter the number of the category: "))
+            if 0 < category < 5:
+                if category == 1 and number not in (job or learning or sport or recreation):
+                    job[number] = tasks[number]
+                elif category == 2 and number not in (job or learning or sport or recreation):
+                    learning[number] = tasks[number]
+                elif category == 3 and number not in (job or learning or sport or recreation):
+                    sport[number] = tasks[number]
+                elif category == 4 and number not in (job or learning or sport or recreation):
+                    recreation[number] = tasks[number]
+                else:
+                    print("\nThis task has already been added to the category\n")
+            else:
+                print("\nIt's not the category number")
+        else:
+            print("\nThis task doesn't exist\n")
+
+    elif answer == "no":
+        print("\nNo task has been added to the category\n")
+    else:
+        print("\nInvalid value\n")
+
+
+def show_categories():
+    print("1. job: ")
+    for k in sorted(job):
+        print(job[k] + " [" + k + "]\n")
+    print("2. learning: ")
+    for k in sorted(learning):
+        print(learning[k] + " [" + k + "]\n")
+    print("3. sport: ")
+    for k in sorted(sport):
+        print(sport[k] + " [" + k + "]\n")
+    print("4. recreation: ")
+    for k in sorted(recreation):
+        print(recreation[k] + " [" + k + "]\n")
+    print()
+
+
+def save_categories_after_exit(name):
+    if name == "":
+        file = open("task categories.txt", "w")
+        for category in categories:
+            for task in category.keys():
+                if category == job:
+                    file.write("[job]" + str(task) + "\n")
+                    file.write("[job]" + str(category[task]) + "\n")
+                elif category == learning:
+                    file.write("[learning]" + str(task) + "\n")
+                    file.write("[learning]" + str(category[task]) + "\n")
+                elif category == sport:
+                    file.write("[sport]" + str(task) + "\n")
+                    file.write("[sport]" + str(category[task]) + "\n")
+                elif category == recreation:
+                    file.write("[recreation]" + str(task) + "\n")
+                    file.write("[recreation]" + str(category[task]) + "\n")
+        file.close()
+
+    elif name != "" and name != "fnf":
+        file = open("task categories_" + name, "w")
+        for category in categories:
+            for task in category.keys():
+                if category == job:
+                    file.write("[job]" + str(task) + "\n")
+                    file.write("[job]" + str(category[task]) + "\n")
+                elif category == learning:
+                    file.write("[learning]" + str(task) + "\n")
+                    file.write("[learning]" + str(category[task]) + "\n")
+                elif category == sport:
+                    file.write("[sport]" + str(task) + "\n")
+                    file.write("[sport]" + str(category[task]) + "\n")
+                elif category == recreation:
+                    file.write("[recreation]" + str(task) + "\n")
+                    file.write("[recreation]" + str(category[task]) + "\n")
+        file.close()
+    elif name == "fnf":
+        pass
+
+
+def load_categories(name):
+    key = ""
+    value = ""
+
+    try:
+        file = open("task categories_" + name, "r")
+        f = file.readlines()
+        count = 0
+        for line in f:
+            if count % 2 == 0:
+                key = line.strip("\n")
+            elif count % 2 != 0:
+                value = line.strip("\n")
+
+            if "[job]" in key:
+                a = key.removeprefix("[job]")
+                job[a] = value.removeprefix("[job]")
+            elif "[learning]" in key:
+                a = key.removeprefix("[learning]")
+                learning[a] = value.removeprefix("[learning]")
+            elif "[sport]" in key:
+                a = key.removeprefix("[sport]")
+                sport[a] = value.removeprefix("[sport]")
+            elif "[recreation]" in key:
+                a = key.removeprefix("[recreation]")
+                recreation[a] = value.removeprefix("[recreation]")
+            count += 1
+        file.close()
+    except FileNotFoundError:
+        pass
+
+
 def show_menu():
     print("1. Show tasks")
     print("2. Add task")
@@ -239,7 +360,8 @@ def show_menu():
     print("5. Load changes from file")
     print("6. Autosave")
     print("7. Completed tasks")
-    print("8. Exit")
+    print("8. Categories")
+    print("9. Exit")
 
 
 show_menu()
@@ -272,6 +394,7 @@ while True:
         elif user_choice == 5:
             name_of_the_file = load_tasks_from_file()
             load_completed_tasks(name_of_the_file)
+            load_categories(name_of_the_file)
             show_menu()
 
         elif user_choice == 6:
@@ -285,12 +408,18 @@ while True:
             show_menu()
 
         elif user_choice == 8:
+            add_to_category()
+            show_categories()
+            show_menu()
+
+        elif user_choice == 9:
             save_after_exit(name_of_the_file, auto_s)
             save_completed_tasks_after_exit(name_of_the_file)
+            save_categories_after_exit(name_of_the_file)
             print("Exit")
             break
 
-        elif user_choice <= 0 or user_choice >= 8:
+        elif user_choice <= 0 or user_choice >= 9:
             print("Invalid Value!")
             print()
             show_menu()
