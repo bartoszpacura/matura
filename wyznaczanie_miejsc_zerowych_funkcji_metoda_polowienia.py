@@ -1,3 +1,6 @@
+# from math import fabs
+#
+#
 # def func(x):
 #     return x * (x * (x - 3) + 2) - 6
 #
@@ -5,9 +8,11 @@
 # def bisection(a, b, epsilon):
 #     if func(a) * func(b) >= 0:
 #         return print("Błędne założenie!\n")
+#     if a == b:
+#         return print("Błędne założenie!\n")
 #
 #     srodek = 0
-#     while (b - a) >= epsilon:
+#     while fabs(b - a) > epsilon:
 #
 #         srodek = (a + b) / 2
 #
@@ -31,6 +36,7 @@
 
 
 # rozwiązanie rekurencyjne
+from math import fabs
 
 
 def func(x):
@@ -39,11 +45,13 @@ def func(x):
 
 def bisection(a, b, epsilon):
     if func(a) * func(b) >= 0:
-        return print("Błędne założenie!\n")
+        return False
+    if a == b:
+        return False
 
     srodek = (a + b) / 2
 
-    if b - a <= epsilon:
+    if fabs(b - a) <= epsilon:
         return srodek
 
     if func(a) * func(srodek) < 0:
@@ -57,4 +65,8 @@ b = int(input(""))
 
 epsilon = 0.00001
 
-print("Miejsce zerowe wynosi:" + f"{bisection(a, b, epsilon): .5f}")
+m = bisection(a, b, epsilon)
+if m is False:
+    print("Błędne założenie!\n")
+else:
+    print("Miejsce zerowe wynosi:" + f"{m: .5f}")
