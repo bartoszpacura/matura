@@ -1,105 +1,116 @@
 # 6.1.
 
-# file = open("dane.txt")
-#
-# dane = []
-#
-# max = 0
-# min = 255
-#
-# for line in file:
-#     temp = line.split()
-#     dane.append([int(x) for x in temp])
-#
-# for i in dane:
-#     for j in i:
-#         if j > max:
-#             max = j
-#         if j < min:
-#             min = j
-#
-# print("Najjaśniejszy piksel: " + str(max))
-# print("Najciemniejszy piksel: " + str(min))
-#
-# file.close()
+file = open("dane.txt")
 
+maximum = 0
+minimum = 255
 
+for wiersz in file:
+    for number in wiersz.split():
+        if int(number) > maximum:
+            maximum = int(number)
+        if int(number) < minimum:
+            minimum = int(number)
 
+print(maximum, minimum)
+
+file.close()
+
+save = open("wyniki_2017.txt", "a")
+save.write(str(maximum) + " " + str(minimum) + "\n")
+save.close()
 
 # 6.2.
 
-# dane = []
-# file = open("dane.txt")
-# counter = 0
-#
-#
-# for line in file.readlines():
-#     dane.append(line.split())
-#
-# for line in dane:
-#     for i in range(len(line) // 2):
-#         if line[i] != line[len(line) - i - 1]:
-#             counter += 1
-#             break
-#
-# print("Najmniejsza liczba wierszy, jaką należy usunąć to: " + str(counter))
-#
-# file.close()
 
+file = open("dane.txt")
 
+numbers = []
 
+for wiersz in file:
+    numbers.append(wiersz.split())
+
+file.close()
+
+counter = 0
+for wiersz in numbers:
+    for i in range(0, 320):
+        if wiersz[i] != wiersz[319 - i]:
+            counter += 1
+            break
+
+print(counter)
+
+save = open("wyniki_2017.txt", "a")
+save.write(str(counter) + "\n")
+save.close()
 
 # 6.3.
 
-# dane = []
-# file = open("dane.txt")
-# counter = 0
-# tab_id = []
-#
-# for line in file:
-#     temp = line.split()
-#     dane.append([int(x) for x in temp])
 
-
-# do przeanalizowania
-
-import math
-
-
-def nearContrasting(x, y, all):
+def znajdz_kontrast(numbers, x, y):
     if x != 0:
-        if math.fabs(all[x][y] - all[x - 1][y]) > 128:
+        if abs(int(numbers[x][y]) - int(numbers[x - 1][y])) > 128:
             return True
     if x != 199:
-        if math.fabs(all[x][y] - all[x + 1][y]) > 128:
-            return True
-    if y != 319:
-        if math.fabs(all[x][y] - all[x][y + 1]) > 128:
+        if abs(int(numbers[x][y]) - int(numbers[x + 1][y])) > 128:
             return True
     if y != 0:
-        if math.fabs(all[x][y] - all[x][y - 1]) > 128:
+        if abs(int(numbers[x][y]) - int(numbers[x][y - 1])) > 128:
+            return True
+    if y != 319:
+        if abs(int(numbers[x][y]) - int(numbers[x][y + 1])) > 128:
             return True
     return False
 
 
-file = open("dane.txt", "r").read().split('\n')
-dane = [[0 for x in range(320)] for y in range(200)]
+file = open("dane.txt")
+
+numbers = []
+
+for i in file:
+    numbers.append(i.split())
+
+file.close()
+
 counter = 0
-contrasting = 0
-for line in file:
-    if len(line.split(" ")) < 2 or len(line.split(" ")[1]) < 1:
-        continue
-    points = line.split(" ")
-    for i in range(320):
-        dane[counter][i] = int(points[i])
-    counter += 1
-for i in range(200):
-    for j in range(320):
-        if nearContrasting(i, j, dane):
-            contrasting += 1
-print("Punktów kontrastujących: " + str(contrasting))
+for x in range(0, 200):
+    for y in range(0, 320):
+        if znajdz_kontrast(numbers, x, y):
+            counter += 1
 
+print(counter)
 
+save = open("wyniki_2017.txt", "a")
+save.write(str(counter) + "\n")
+save.close()
 
 # 6.4.
 
+
+file = open("dane.txt")
+
+numbers = []
+
+for i in file:
+    numbers.append(i.split())
+
+counter = 1
+counter_temp = 1
+w = 0
+
+while w < 200:
+    for n in range(1, 200):
+        if numbers[n][w] == numbers[n - 1][w]:
+            counter_temp += 1
+        else:
+            if counter_temp > counter:
+                counter = counter_temp
+            counter_temp = 1
+    w += 1
+
+print(counter)
+
+save = open("wyniki_2017.txt", "a")
+save.write(str(counter) + "\n")
+save.close()
