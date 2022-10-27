@@ -1,4 +1,5 @@
-# Modyfikuję to-do list, którą została przedstawiona w tym filmie: https://youtu.be/BBu6ZoAHIwI?t=6624
+# Modyfikuję to-do list, która została przedstawiona w tym filmie: https://youtu.be/BBu6ZoAHIwI?t=6624
+
 import itertools
 import os.path
 
